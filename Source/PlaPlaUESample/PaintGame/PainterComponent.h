@@ -8,16 +8,16 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Kismet/KismetRenderingLibrary.h"
 
-#include "PaintSamplePlayer.generated.h"
+#include "PainterComponent.generated.h"
 
-UCLASS()
-class PLAPLAUESAMPLE_API APaintSamplePlayer : public ACharacter
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class PLAPLAUESAMPLE_API UPainterComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	APaintSamplePlayer();
+	UPainterComponent();
 
 protected:
 	// Called when the game starts or when spawned
@@ -25,9 +25,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
 	void ExecPaint();

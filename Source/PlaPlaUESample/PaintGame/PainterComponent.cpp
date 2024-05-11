@@ -1,4 +1,4 @@
-#include "PaintSamplePlayer.h"
+#include "PainterComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
@@ -18,15 +18,13 @@ void NextIter(T& Iter)
 	}
 }
 
-APaintSamplePlayer::APaintSamplePlayer()
+UPainterComponent::UPainterComponent()
 {
-    PrimaryActorTick.bCanEverTick = true;
+    PrimaryComponentTick.bCanEverTick = true;
 }
 
-void APaintSamplePlayer::BeginPlay()
+void UPainterComponent::BeginPlay()
 {
-    Super::BeginPlay();
-
     Camera = FindObject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
 
 	PaintMaterialInstance = UMaterialInstanceDynamic::Create(PaintMaterial, this);
@@ -56,10 +54,8 @@ void APaintSamplePlayer::BeginPlay()
     }
 }
 
-void APaintSamplePlayer::Tick(float DeltaTime)
+void UPainterComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-    Super::Tick(DeltaTime);
-
     TraceForward();
 
     if (TraceHitResult.IsValidBlockingHit())
@@ -68,12 +64,7 @@ void APaintSamplePlayer::Tick(float DeltaTime)
     }
 }
 
-void APaintSamplePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void APaintSamplePlayer::ExecPaint()
+void UPainterComponent::ExecPaint()
 {
     if (TraceHitResult.bBlockingHit)
     {
@@ -87,7 +78,7 @@ void APaintSamplePlayer::ExecPaint()
     }
 }
 
-void APaintSamplePlayer::FinishPaint()
+void UPainterComponent::FinishPaint()
 {
 	if (TraceHitResult.bBlockingHit)
 	{
@@ -98,7 +89,7 @@ void APaintSamplePlayer::FinishPaint()
 	}
 }
 
-void APaintSamplePlayer::ChangeColor()
+void UPainterComponent::ChangeColor()
 {
     NextIter(BrushColorIter);
 
@@ -111,7 +102,7 @@ void APaintSamplePlayer::ChangeColor()
     }
 }
 
-void APaintSamplePlayer::ChangeBrushTexture()
+void UPainterComponent::ChangeBrushTexture()
 {
 	NextIter(BrushTextureIter);
     // マテリアルのテクスチャを差し替え
@@ -126,7 +117,7 @@ void APaintSamplePlayer::ChangeBrushTexture()
     }
 }
 
-bool APaintSamplePlayer::TraceForward()
+bool UPainterComponent::TraceForward()
 {
 	// プレイヤーのカメラの位置から前方にレイを飛ばす
     if (!Camera)
@@ -141,7 +132,7 @@ bool APaintSamplePlayer::TraceForward()
     FVector End = Start + ForwardVector * 1000;
 
     FCollisionQueryParams CollisionParams(SCENE_QUERY_STAT(GetUVFromWorldLocation), true);
-    CollisionParams.AddIgnoredActor(this);
+    CollisionParams.AddIgnoredActor(GetOwner());
 
     GetWorld()->LineTraceSingleByChannel(TraceHitResult, Start, End, ECC_Visibility, CollisionParams);
 
