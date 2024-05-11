@@ -24,30 +24,9 @@ UPainterComponent::UPainterComponent()
 
 void UPainterComponent::BeginPlay()
 {
-    Camera = FindObject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
-
 	PaintMaterialInstance = UMaterialInstanceDynamic::Create(PaintMaterial, this);
 
     BrushColorIter.Reset();
-    BrushTextureIter.Reset();
-    PaintMaterialInstance->SetTextureParameterValue(FName("BrushTexture"), *BrushTextureIter);
-
-    // デバッグ描画の初期化
-	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
-	{
-		if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
-		{
-			FPaintSampleDebugHUDDrawParam DrawParam;
-			DrawParam.ScreenH = 100;
-			DrawParam.ScreenW = 100;
-			DrawParam.ScreenX = 10;
-			DrawParam.ScreenY = 10;
-			DrawParam.Texture = *BrushTextureIter;
-			DrawParam.BlendMode = EBlendMode::BLEND_Translucent;
-			HUD->UpdateParam(APaintSampleDebugHUD::EIndex::Brush, DrawParam);
-			HUD->UpdateTintColor(APaintSampleDebugHUD::EIndex::Brush, *BrushColorIter);
-        }
-    }
 }
 
 void UPainterComponent::TryPaint(const FHitResult& TraceHitResult)
@@ -72,21 +51,6 @@ void UPainterComponent::ChangeColor()
         if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
         {
             HUD->UpdateTintColor(APaintSampleDebugHUD::EIndex::Brush, *BrushColorIter);
-        }
-    }
-}
-
-void UPainterComponent::ChangeBrushTexture()
-{
-	NextIter(BrushTextureIter);
-    // マテリアルのテクスチャを差し替え
-	PaintMaterialInstance->SetTextureParameterValue(FName("BrushTexture"), *BrushTextureIter);
-
-    if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
-    {
-        if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
-        {
-            HUD->UpdateTexture(APaintSampleDebugHUD::EIndex::Brush, *BrushTextureIter);
         }
     }
 }

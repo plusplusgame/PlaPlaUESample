@@ -31,10 +31,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeColor();
 
-	// ブラシのテクスチャ変更
-	UFUNCTION(BlueprintCallable)
-	void ChangeBrushTexture();
-
 private:
 
 	// ペイントする色のリスト
@@ -61,10 +57,7 @@ private:
 private:
 	UPROPERTY()
 	UMaterialInstanceDynamic* PaintMaterialInstance;
-	UPROPERTY()
-	UCameraComponent* Camera;
 
 	TArray<FColor>::TIterator BrushColorIter = TArray<FColor>::TIterator(BrushColors);
-	TArray<UTexture2D*>::TIterator BrushTextureIter = TArray<UTexture2D*>::TIterator(BrushTextures);
 
 };
