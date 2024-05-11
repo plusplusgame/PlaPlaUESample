@@ -32,33 +32,6 @@ void APaintTarget::BeginPlay()
 
 		UE_LOG(LogTemp, Warning, TEXT("Texture Replace Completed"));
 	}
-
-	// デバッグ描画
-	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
-	{
-		if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
-		{
-			{
-				FPaintSampleDebugHUDDrawParam DrawParam;
-				DrawParam.ScreenH = 300;
-				DrawParam.ScreenW = 300;
-				DrawParam.ScreenX = 10;
-				DrawParam.ScreenY = 10;
-				DrawParam.Texture = PaintRenderTarget;
-				HUD->UpdateParam(APaintSampleDebugHUD::EIndex::RenderTarget, DrawParam);
-			}
-			{
-				FPaintSampleDebugHUDDrawParam DrawParam;
-				DrawParam.ScreenH = 300;
-				DrawParam.ScreenW = 300;
-				DrawParam.ScreenX = 320;
-				DrawParam.ScreenY = 10;
-				DrawParam.Texture = PaintRenderTargetMask;
-				DrawParam.BlendMode = EBlendMode::BLEND_Translucent;
-				HUD->UpdateParam(APaintSampleDebugHUD::EIndex::RenderTargetMask, DrawParam);
-			}
-		}
-	}
 }
 
 void APaintTarget::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, const FHitResult& HitResult )
@@ -85,6 +58,21 @@ void APaintTarget::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, const F
 		BrushMaterial->SetTextureParameterValue(FName("PaintTargetTexture"), PaintRenderTarget);
 
 		UKismetRenderingLibrary::DrawMaterialToRenderTarget(World, PaintRenderTarget, BrushMaterial);
+	}
+
+	// デバッグ描画
+	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
+		{
+			FPaintSampleDebugHUDDrawParam DrawParam;
+			DrawParam.ScreenH = 300;
+			DrawParam.ScreenW = 300;
+			DrawParam.ScreenX = 10;
+			DrawParam.ScreenY = 10;
+			DrawParam.Texture = PaintRenderTarget;
+			HUD->UpdateParam(APaintSampleDebugHUD::EIndex::RenderTarget, DrawParam);
+		}
 	}
 }
 
