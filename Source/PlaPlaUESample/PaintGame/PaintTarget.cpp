@@ -2,7 +2,7 @@
 
 
 #include "PaintTarget.h"
-#include "MyDebugHUD.h"
+#include "PaintSampleDebugHUD.h"
 #include "kismet/KismetRenderingLibrary.h"
 
 
@@ -43,26 +43,26 @@ void APaintTarget::BeginPlay()
 	// デバッグ描画
 	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 	{
-		if (AMyDebugHUD* HUD = Cast<AMyDebugHUD>(PC->GetHUD()))
+		if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
 		{
 			{
-				FMyDebugHUDDrawParam DrawParam;
+				FPaintSampleDebugHUDDrawParam DrawParam;
 				DrawParam.ScreenH = 300;
 				DrawParam.ScreenW = 300;
 				DrawParam.ScreenX = 10;
 				DrawParam.ScreenY = 10;
 				DrawParam.Texture = PaintRenderTarget;
-				HUD->UpdateParam(AMyDebugHUD::EIndex::RenderTarget, DrawParam);
+				HUD->UpdateParam(APaintSampleDebugHUD::EIndex::RenderTarget, DrawParam);
 			}
 			{
-				FMyDebugHUDDrawParam DrawParam;
+				FPaintSampleDebugHUDDrawParam DrawParam;
 				DrawParam.ScreenH = 300;
 				DrawParam.ScreenW = 300;
 				DrawParam.ScreenX = 320;
 				DrawParam.ScreenY = 10;
 				DrawParam.Texture = PaintRenderTargetMask;
 				DrawParam.BlendMode = EBlendMode::BLEND_Translucent;
-				HUD->UpdateParam(AMyDebugHUD::EIndex::RenderTargetMask, DrawParam);
+				HUD->UpdateParam(APaintSampleDebugHUD::EIndex::RenderTargetMask, DrawParam);
 			}
 		}
 	}
@@ -195,9 +195,9 @@ void APaintTarget::UpdateHUD()
 {
 	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 	{
-		if (AMyDebugHUD* HUD = Cast<AMyDebugHUD>(PC->GetHUD()))
+		if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
 		{
-			HUD->UpdateTexture(AMyDebugHUD::EIndex::RenderTarget, PaintRenderTarget);
+			HUD->UpdateTexture(APaintSampleDebugHUD::EIndex::RenderTarget, PaintRenderTarget);
 		}
 	}
 }

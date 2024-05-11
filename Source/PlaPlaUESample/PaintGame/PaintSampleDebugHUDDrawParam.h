@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/EngineTypes.h" 
-#include "MyDebugHUDDrawParam.generated.h"
+#include "PaintSampleDebugHUDDrawParam.generated.h"
 
 USTRUCT(BlueprintType)
-struct SCAR_API FMyDebugHUDDrawParam
+struct PLAPLAUESAMPLE_API FPaintSampleDebugHUDDrawParam
 {
 	GENERATED_BODY()
 

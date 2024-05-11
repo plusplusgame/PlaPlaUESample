@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "MyDebugHUDDrawParam.h"
-#include "MyDebugHUD.generated.h"
+#include "PaintSampleDebugHUDDrawParam.h"
+#include "PaintSampleDebugHUD.generated.h"
 
 UCLASS()
-class SCAR_API AMyDebugHUD : public AHUD
+class PLAPLAUESAMPLE_API APaintSampleDebugHUD : public AHUD
 {
 	GENERATED_BODY()
 
@@ -23,13 +23,13 @@ public:
 	};
 
 public:
-	AMyDebugHUD();
-	void UpdateParam(EIndex Index, const FMyDebugHUDDrawParam& Param);
+	APaintSampleDebugHUD();
+	void UpdateParam(EIndex Index, const FPaintSampleDebugHUDDrawParam& Param);
 	void UpdateTexture(EIndex Index, const UTexture* Texture);
 	void UpdateTintColor(EIndex Index, FColor Color);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MyDebugHUD")
-	TArray<FMyDebugHUDDrawParam> DrawParams;
+	TArray<FPaintSampleDebugHUDDrawParam> DrawParams;
 
 };

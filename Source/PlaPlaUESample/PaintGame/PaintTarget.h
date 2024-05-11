@@ -9,7 +9,7 @@
 #include "PaintTarget.generated.h"
 
 UCLASS()
-class SCAR_API APaintTarget : public AActor
+class PLAPLAUESAMPLE_API APaintTarget : public AActor
 {
 	GENERATED_BODY()
 	

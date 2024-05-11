@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,16 +8,16 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Kismet/KismetRenderingLibrary.h"
 
-#include "MyPlayer.generated.h"
+#include "PaintSamplePlayer.generated.h"
 
 UCLASS()
-class SCAR_API AMyPlayer : public ACharacter
+class PLAPLAUESAMPLE_API APaintSamplePlayer : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	AMyPlayer();
+	APaintSamplePlayer();
 
 protected:
 	// Called when the game starts or when spawned

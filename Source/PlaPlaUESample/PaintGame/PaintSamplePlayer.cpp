@@ -1,10 +1,10 @@
-#include "MyPlayer.h"
+#include "PaintSamplePlayer.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Components/InputComponent.h"
-#include "MyDebugHUD.h"
+#include "PaintSampleDebugHUD.h"
 #include "PaintTarget.h"
 
 
@@ -18,12 +18,12 @@ void NextIter(T& Iter)
 	}
 }
 
-AMyPlayer::AMyPlayer()
+APaintSamplePlayer::APaintSamplePlayer()
 {
     PrimaryActorTick.bCanEverTick = true;
 }
 
-void AMyPlayer::BeginPlay()
+void APaintSamplePlayer::BeginPlay()
 {
     Super::BeginPlay();
 
@@ -39,24 +39,24 @@ void AMyPlayer::BeginPlay()
 
     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
     {
-        if (AMyDebugHUD* HUD = Cast<AMyDebugHUD>(PC->GetHUD()))
+        if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
         {
             {
-                FMyDebugHUDDrawParam DrawParam;
+                FPaintSampleDebugHUDDrawParam DrawParam;
                 DrawParam.ScreenH = 100;
                 DrawParam.ScreenW = 100;
                 DrawParam.ScreenX = 620;
                 DrawParam.ScreenY = 10;
                 DrawParam.Texture = *BrushTextureIter;
                 DrawParam.BlendMode = EBlendMode::BLEND_Translucent;
-                HUD->UpdateParam(AMyDebugHUD::EIndex::Brush, DrawParam);
-                HUD->UpdateTintColor(AMyDebugHUD::EIndex::Brush, *BrushColorIter);
+                HUD->UpdateParam(APaintSampleDebugHUD::EIndex::Brush, DrawParam);
+                HUD->UpdateTintColor(APaintSampleDebugHUD::EIndex::Brush, *BrushColorIter);
             }
         }
     }
 }
 
-void AMyPlayer::Tick(float DeltaTime)
+void APaintSamplePlayer::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
@@ -68,12 +68,12 @@ void AMyPlayer::Tick(float DeltaTime)
     }
 }
 
-void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APaintSamplePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AMyPlayer::ExecPaint()
+void APaintSamplePlayer::ExecPaint()
 {
     if (TraceHitResult.bBlockingHit)
     {
@@ -87,7 +87,7 @@ void AMyPlayer::ExecPaint()
     }
 }
 
-void AMyPlayer::FinishPaint()
+void APaintSamplePlayer::FinishPaint()
 {
 	if (TraceHitResult.bBlockingHit)
 	{
@@ -98,20 +98,20 @@ void AMyPlayer::FinishPaint()
 	}
 }
 
-void AMyPlayer::ChangeColor()
+void APaintSamplePlayer::ChangeColor()
 {
     NextIter(BrushColorIter);
 
     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
     {
-        if (AMyDebugHUD* HUD = Cast<AMyDebugHUD>(PC->GetHUD()))
+        if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
         {
-            HUD->UpdateTintColor(AMyDebugHUD::EIndex::Brush, *BrushColorIter);
+            HUD->UpdateTintColor(APaintSampleDebugHUD::EIndex::Brush, *BrushColorIter);
         }
     }
 }
 
-void AMyPlayer::ChangeBrushTexture()
+void APaintSamplePlayer::ChangeBrushTexture()
 {
 	NextIter(BrushTextureIter);
     // マテリアルのテクスチャを差し替え
@@ -119,14 +119,14 @@ void AMyPlayer::ChangeBrushTexture()
 
     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
     {
-        if (AMyDebugHUD* HUD = Cast<AMyDebugHUD>(PC->GetHUD()))
+        if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
         {
-            HUD->UpdateTexture(AMyDebugHUD::EIndex::Brush, *BrushTextureIter);
+            HUD->UpdateTexture(APaintSampleDebugHUD::EIndex::Brush, *BrushTextureIter);
         }
     }
 }
 
-bool AMyPlayer::TraceForward()
+bool APaintSamplePlayer::TraceForward()
 {
 	// プレイヤーのカメラの位置から前方にレイを飛ばす
     if (!Camera)
