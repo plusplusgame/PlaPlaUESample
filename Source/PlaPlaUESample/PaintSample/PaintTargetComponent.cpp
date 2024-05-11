@@ -1,49 +1,56 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PaintTarget.h"
+#include "PaintTargetComponent.h"
 #include "PaintSampleDebugHUD.h"
 #include "kismet/KismetRenderingLibrary.h"
 
-APaintTarget::APaintTarget()
+UPaintTargetComponent::UPaintTargetComponent()
 {
 }
 
-void APaintTarget::BeginPlay()
+void UPaintTargetComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// テクスチャ作成
+	// 塗るためのレンダーターゲット作成
 	PaintRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA16f, FLinearColor::White);
-	PaintRenderTargetMask = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA16f, FLinearColor::Transparent);
 
-	// 初期テクスチャを描画
-	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), PaintRenderTarget, StoneMaterial);
+	StaticMeshComponent = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
+	if (!StaticMeshComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("StaticMeshComponent is not found"));
+		return;
+	}
 
-	// マテリアルを作成して、テクスチャを設定
+	// 初期テクスチャを描画しておく
+	auto* OriginalMaterial = StaticMeshComponent->GetMaterial(0);
+	if (!OriginalMaterial)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Material is not found"));
+		return;
+	}
+
+	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), PaintRenderTarget, OriginalMaterial);
+
+	// マテリアルインスタンスを作成して、テクスチャを設定
 	PaintMaterialInstance = UMaterialInstanceDynamic::Create(RenderTargetMaterialOriginal, this);
-	PaintMaterialInstance->SetTextureParameterValue(FName("TextureSampleParam"), PaintRenderTarget);
+	PaintMaterialInstance->SetTextureParameterValue(FName("RenderTargetTexture"), PaintRenderTarget);
 
 	// メッシュのマテリアルを置き換え
-	StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
-	if (StaticMeshComponent)
-	{
-		StaticMeshComponent->SetMaterial(0, PaintMaterialInstance);
-
-		UE_LOG(LogTemp, Warning, TEXT("Texture Replace Completed"));
-	}
+	StaticMeshComponent->SetMaterial(0, PaintMaterialInstance);
 }
 
-void APaintTarget::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, const FHitResult& HitResult )
+void UPaintTargetComponent::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, const FHitResult& HitResult )
 {
 	const FVector& PaintPos = HitResult.ImpactPoint;
-	;
+	
 	auto* World = GetWorld();
 	check(World);
 	check(BrushMaterial);
 	check(PaintRenderTarget);
 
-	const FVector Offset = HitResult.Normal * PaintInterval * 2;
+	const FVector Offset = HitResult.Normal * 2;
 	const FVector Start = PaintPos + Offset;
 	const FVector End = PaintPos - Offset;
 	FHitResult MyHitResult;
@@ -76,7 +83,7 @@ void APaintTarget::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, const F
 	}
 }
 
-FVector2f APaintTarget::CalcUV(const FHitResult& HitResult) const
+FVector2f UPaintTargetComponent::CalcUV(const FHitResult& HitResult) const
 {
 	if (HitResult.FaceIndex < 0)
 	{

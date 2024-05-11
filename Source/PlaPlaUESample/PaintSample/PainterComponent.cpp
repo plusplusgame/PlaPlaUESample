@@ -5,7 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "Components/InputComponent.h"
 #include "PaintSampleDebugHUD.h"
-#include "PaintTarget.h"
+#include "PaintTargetComponent.h"
 
 
 template <typename T>
@@ -34,7 +34,7 @@ void UPainterComponent::TryPaint(const FHitResult& TraceHitResult)
     if (TraceHitResult.bBlockingHit)
     {
 		auto PaintLoc = TraceHitResult.Location;
-        if (APaintTarget* const PaintTarget = Cast<APaintTarget>(TraceHitResult.GetActor()))
+        if (UPaintTargetComponent* const PaintTarget = Cast<UPaintTargetComponent>(TraceHitResult.GetActor()))
         {
             PaintTarget->PaintToPoint(PaintMaterialInstance, TraceHitResult);
         }
