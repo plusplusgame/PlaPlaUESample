@@ -2,8 +2,8 @@
 
 
 #include "TP_WeaponComponent.h"
-#include "PlaPlaUESampleCharacter.h"
-#include "PlaPlaUESampleProjectile.h"
+#include "CommonFPCharacter.h"
+#include "CommonProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -44,7 +44,7 @@ void UTP_WeaponComponent::Fire()
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 	
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<APlaPlaUESampleProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			World->SpawnActor<ACommonProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 		}
 	}
 	
@@ -66,7 +66,7 @@ void UTP_WeaponComponent::Fire()
 	}
 }
 
-bool UTP_WeaponComponent::AttachWeapon(APlaPlaUESampleCharacter* TargetCharacter)
+bool UTP_WeaponComponent::AttachWeapon(ACommonFPCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
 

@@ -6,7 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "TP_WeaponComponent.generated.h"
 
-class APlaPlaUESampleCharacter;
+class ACommonFPCharacter;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PLAPLAUESAMPLE_API UTP_WeaponComponent : public USkeletalMeshComponent
@@ -16,7 +16,7 @@ class PLAPLAUESAMPLE_API UTP_WeaponComponent : public USkeletalMeshComponent
 public:
 	/** Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class APlaPlaUESampleProjectile> ProjectileClass;
+	TSubclassOf<class ACommonProjectile> ProjectileClass;
 
 	/** Sound to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
@@ -43,7 +43,7 @@ public:
 
 	/** Attaches the actor to a FirstPersonCharacter */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
-	bool AttachWeapon(APlaPlaUESampleCharacter* TargetCharacter);
+	bool AttachWeapon(ACommonFPCharacter* TargetCharacter);
 
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
@@ -56,5 +56,5 @@ protected:
 
 private:
 	/** The Character holding this weapon*/
-	APlaPlaUESampleCharacter* Character;
+	ACommonFPCharacter* Character;
 };
