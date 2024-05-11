@@ -16,33 +16,28 @@ class PLAPLAUESAMPLE_API UPainterComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	UPainterComponent();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	// ヒット相手にペイントを実行
 	UFUNCTION(BlueprintCallable)
-	void ExecPaint();
+	void TryPaint(const FHitResult& TraceHitResult);
 
-	UFUNCTION(BlueprintCallable)
-	void FinishPaint();
-
+	// ブラシの色変更
 	UFUNCTION(BlueprintCallable)
 	void ChangeColor();
 
+	// ブラシのテクスチャ変更
 	UFUNCTION(BlueprintCallable)
 	void ChangeBrushTexture();
 
-	bool TraceForward();
-
 private:
 
+	// ペイントする色のリスト
 	UPROPERTY(EditAnywhere)
 	TArray<FColor> BrushColors =
 	{
@@ -55,12 +50,11 @@ private:
 		FColor::White,
 	};
 
+	// マテリアル
 	UPROPERTY(EditAnywhere)
-	UMaterial* PaintMaterial; // 材料を設定するためのプロパティ
+	UMaterial* PaintMaterial; 
 
-	UPROPERTY(EditAnywhere)
-	UMaterial* MaskMaterial;
-
+	// ペイントするテクスチャのリスト
 	UPROPERTY(EditAnywhere)
 	TArray<UTexture2D*> BrushTextures = { nullptr };
 
@@ -68,12 +62,8 @@ private:
 	UPROPERTY()
 	UMaterialInstanceDynamic* PaintMaterialInstance;
 	UPROPERTY()
-	UMaterialInstanceDynamic* MaskMaterialInstance;
-	UPROPERTY()
 	UCameraComponent* Camera;
 
-	FHitResult TraceHitResult;
-	bool IsPainting = false;
 	TArray<FColor>::TIterator BrushColorIter = TArray<FColor>::TIterator(BrushColors);
 	TArray<UTexture2D*>::TIterator BrushTextureIter = TArray<UTexture2D*>::TIterator(BrushTextures);
 

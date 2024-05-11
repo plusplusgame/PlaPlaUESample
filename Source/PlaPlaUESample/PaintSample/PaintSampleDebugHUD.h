@@ -16,7 +16,6 @@ public:
 	enum class EIndex
 	{
 		RenderTarget,
-		RenderTargetMask,
 		Brush,
 		
 		Count,

@@ -14,27 +14,18 @@ class PLAPLAUESAMPLE_API APaintTarget : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	APaintTarget();
 
-	void DoPaint(UMaterialInstanceDynamic* PaintMaterial, UMaterialInstanceDynamic* MaskMaterial, const FHitResult& HitResult);
-	void FinishPaint();
+	void PaintToPoint(UMaterialInstanceDynamic* BrushMaterial
+		, const FHitResult& HitResult
+	);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 private:
-	void PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, UMaterialInstanceDynamic* MaskMaterial, const FHitResult& HitResult, const FVector PaintPos);
 	// ヒット位置からUV座標を計算
 	FVector2f CalcUV(const FHitResult& HitResult) const;
-
-	bool IsBeingPainted() const { return LatestPaintedPosition.IsSet(); }
-	void UpdateHUD();
 
 protected:
 
@@ -57,5 +48,4 @@ private:
 	UTextureRenderTarget2D* PaintRenderTargetMask = nullptr;
 	UPROPERTY()
 	UStaticMeshComponent* StaticMeshComponent = nullptr;
-	TOptional<FVector> LatestPaintedPosition;
 };

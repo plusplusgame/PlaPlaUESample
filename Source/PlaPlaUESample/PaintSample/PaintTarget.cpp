@@ -5,16 +5,10 @@
 #include "PaintSampleDebugHUD.h"
 #include "kismet/KismetRenderingLibrary.h"
 
-
-// Sets default values
 APaintTarget::APaintTarget()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts or when spawned
 void APaintTarget::BeginPlay()
 {
 	Super::BeginPlay();
@@ -25,7 +19,6 @@ void APaintTarget::BeginPlay()
 
 	// 初期テクスチャを描画
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), PaintRenderTarget, StoneMaterial);
-
 
 	// マテリアルを作成して、テクスチャを設定
 	PaintMaterialInstance = UMaterialInstanceDynamic::Create(RenderTargetMaterialOriginal, this);
@@ -68,59 +61,10 @@ void APaintTarget::BeginPlay()
 	}
 }
 
-// Called every frame
-void APaintTarget::Tick(float DeltaTime)
+void APaintTarget::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, const FHitResult& HitResult )
 {
-	Super::Tick(DeltaTime);
-}
-
-void APaintTarget::DoPaint(UMaterialInstanceDynamic* BrushMaterial, UMaterialInstanceDynamic* MaskMaterial, const FHitResult& HitResult)
-{
-	if (!HitResult.IsValidBlockingHit())
-	{
-		return;
-	}
-	if (!BrushMaterial)
-	{
-		return;
-	}
-
-	// 初回
-	if (!LatestPaintedPosition.IsSet())
-	{
-		// HUDの中身を差し替え
-		UpdateHUD();
-		LatestPaintedPosition = HitResult.ImpactPoint;
-		PaintToPoint(BrushMaterial, MaskMaterial, HitResult, HitResult.ImpactPoint);
-		return;
-	}
-	else
-	{
-		const float MovedDistance = FVector::Dist(LatestPaintedPosition.GetValue(), HitResult.ImpactPoint);
-
-		if (MovedDistance > PaintInterval)
-		{
-			// 一定距離移動したら、PaintIntervalごとにペイント
-			const int32 PaintCount = FMath::FloorToInt(MovedDistance / PaintInterval);
-			const FVector PaintDir = (HitResult.ImpactPoint - LatestPaintedPosition.GetValue()).GetSafeNormal();
-			for (int32 i = 0; i < PaintCount; ++i)
-			{
-				const FVector PaintPos = LatestPaintedPosition.GetValue() + PaintDir * PaintInterval * i;
-				PaintToPoint(BrushMaterial, MaskMaterial, HitResult, PaintPos);
-			}
-			LatestPaintedPosition = HitResult.ImpactPoint;
-		}
-	}
-}
-
-void APaintTarget::FinishPaint()
-{	 
-	LatestPaintedPosition.Reset();
-
-}
-
-void APaintTarget::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, UMaterialInstanceDynamic* MaskMaterial, const FHitResult& HitResult, const FVector PaintPos)
-{
+	const FVector& PaintPos = HitResult.ImpactPoint;
+	;
 	auto* World = GetWorld();
 	check(World);
 	check(BrushMaterial);
@@ -140,15 +84,7 @@ void APaintTarget::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, UMateri
 		BrushMaterial->SetVectorParameterValue(FName("PaintUV"), FVector(OutUV.X, OutUV.Y, 0));
 		BrushMaterial->SetTextureParameterValue(FName("PaintTargetTexture"), PaintRenderTarget);
 
-		// マスクのMaterialにパラメータを設定
-		MaskMaterial->SetVectorParameterValue(FName("PaintUV"), FVector(OutUV.X, OutUV.Y, 0));
-		MaskMaterial->SetTextureParameterValue(FName("PaintTargetTexture"), PaintRenderTargetMask);
-
 		UKismetRenderingLibrary::DrawMaterialToRenderTarget(World, PaintRenderTarget, BrushMaterial);
-		UKismetRenderingLibrary::DrawMaterialToRenderTarget(World, PaintRenderTargetMask, MaskMaterial);
-
-		// MyHitResultをデバッグ描画
-		//DrawDebugPoint(World, MyHitResult.ImpactPoint, 10, FColor::Red, false);
 	}
 }
 
@@ -189,15 +125,4 @@ FVector2f APaintTarget::CalcUV(const FHitResult& HitResult) const
 		+ Barycentric.Z * UV2;
 
 	return OutUV;
-}
-
-void APaintTarget::UpdateHUD()
-{
-	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
-	{
-		if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
-		{
-			HUD->UpdateTexture(APaintSampleDebugHUD::EIndex::RenderTarget, PaintRenderTarget);
-		}
-	}
 }
