@@ -3,7 +3,11 @@
 
 #include "PaintTargetComponent.h"
 #include "PaintSampleDebugHUD.h"
-#include "kismet/KismetRenderingLibrary.h"
+#include "Engine/Texture2D.h"
+#include "Engine/TextureRenderTarget2D.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetRenderingLibrary.h"
+#include "Engine/Canvas.h"
 
 UPaintTargetComponent::UPaintTargetComponent()
 {
@@ -13,9 +17,6 @@ void UPaintTargetComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// 塗るためのレンダーターゲット作成
-	PaintRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA16f, FLinearColor::White);
-
 	StaticMeshComponent = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
 	if (!StaticMeshComponent)
 	{
@@ -31,7 +32,18 @@ void UPaintTargetComponent::BeginPlay()
 		return;
 	}
 
-	UKismetRenderingLibrary::DrawMaterialToRenderTarget(GetWorld(), PaintRenderTarget, OriginalMaterial);
+	// 塗るためのレンダーターゲット作成
+	{
+		// テクスチャを取得
+		UTexture* Texture;
+		OriginalMaterial->GetTextureParameterValue(FName("BaseColor"), Texture);
+		if (!Texture)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Texture is not found"));
+			return;
+		}
+		CopyTextureToRenderTarget(Cast<UTexture2D>(Texture), OriginalMaterial, PaintRenderTarget);
+	}
 
 	// マテリアルインスタンスを作成して、テクスチャを設定
 	PaintMaterialInstance = UMaterialInstanceDynamic::Create(RenderTargetMaterialOriginal, this);
@@ -40,6 +52,52 @@ void UPaintTargetComponent::BeginPlay()
 	// メッシュのマテリアルを置き換え
 	StaticMeshComponent->SetMaterial(0, PaintMaterialInstance);
 }
+
+
+void UPaintTargetComponent::CopyTextureToRenderTarget(UTexture2D* SourceTexture, UMaterialInterface* CopyMaterial, UTextureRenderTarget2D*& OutRenderTarget)
+{
+	if (!SourceTexture)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SourceTexture is null"));
+		return;
+	}
+
+	// Render Target の作成
+	OutRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, SourceTexture->GetSizeX(), SourceTexture->GetSizeY(), RTF_RGBA8);
+	if (!OutRenderTarget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to create RenderTarget"));
+		return;
+	}
+
+	// Render Target へテクスチャをコピー
+	UKismetRenderingLibrary::DrawMaterialToRenderTarget(this, OutRenderTarget, nullptr);
+	if (CopyMaterial)
+	{
+		FTextureRenderTargetResource* RenderTargetResource = OutRenderTarget->GameThread_GetRenderTargetResource();
+		UWorld* const World = GetWorld();
+		const auto FeatureLevel = World->Scene->GetFeatureLevel();
+
+		FCanvas Canvas(
+			OutRenderTarget->GameThread_GetRenderTargetResource(),
+			nullptr,
+			World,
+			FeatureLevel
+		);
+		FCanvasTileItem TileItem(FVector2D(0, 0)
+			, SourceTexture->GetResource()
+			, FVector2D(OutRenderTarget->SizeX, OutRenderTarget->SizeY)
+			, FLinearColor::White);
+		TileItem.MaterialRenderProxy = CopyMaterial->GetRenderProxy();
+		Canvas.DrawItem(TileItem);
+		Canvas.Flush_GameThread();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CopyMaterial is not loaded"));
+	}
+}
+
 
 void UPaintTargetComponent::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial, const FHitResult& HitResult )
 {

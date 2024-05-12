@@ -30,6 +30,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	// テクスチャをレンダーターゲットにコピー
+	void CopyTextureToRenderTarget(UTexture2D* SourceTexture, UMaterialInterface* CopyMaterial, UTextureRenderTarget2D*& OutRenderTarget);
 	// ヒット位置からUV座標を計算
 	FVector2f CalcUV(const FHitResult& HitResult) const;
 
