@@ -23,17 +23,17 @@ protected:
 
 public:	
 
-	// ƒqƒbƒg‘Šè‚ÉƒyƒCƒ“ƒg‚ğÀs
+	// ãƒ’ãƒƒãƒˆç›¸æ‰‹ã«ãƒšã‚¤ãƒ³ãƒˆã‚’å®Ÿè¡Œ
 	UFUNCTION(BlueprintCallable)
 	void TryPaint(const FHitResult& TraceHitResult);
 
-	// ƒuƒ‰ƒV‚ÌF•ÏX
+	// ãƒ–ãƒ©ã‚·ã®è‰²å¤‰æ›´
 	UFUNCTION(BlueprintCallable)
 	void ChangeColor();
 
 private:
 
-	// ƒyƒCƒ“ƒg‚·‚éF‚ÌƒŠƒXƒg
+	// ãƒšã‚¤ãƒ³ãƒˆã™ã‚‹è‰²ã®ãƒªã‚¹ãƒˆ
 	UPROPERTY(EditAnywhere)
 	TArray<FColor> BrushColors =
 	{
@@ -46,11 +46,11 @@ private:
 		FColor::White,
 	};
 
-	// ƒ}ƒeƒŠƒAƒ‹
+	// ãƒãƒ†ãƒªã‚¢ãƒ«
 	UPROPERTY(EditAnywhere)
 	UMaterial* PaintMaterial; 
 
-	// ƒyƒCƒ“ƒg‚·‚éƒeƒNƒXƒ`ƒƒ‚ÌƒŠƒXƒg
+	// ãƒšã‚¤ãƒ³ãƒˆã™ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒªã‚¹ãƒˆ
 	UPROPERTY(EditAnywhere)
 	TArray<UTexture2D*> BrushTextures = { nullptr };
 

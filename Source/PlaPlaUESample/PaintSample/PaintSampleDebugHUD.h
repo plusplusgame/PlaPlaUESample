@@ -7,7 +7,7 @@
 #include "PaintSampleDebugHUDDrawParam.h"
 #include "PaintSampleDebugHUD.generated.h"
 
-// �f�o�b�O�pHUD�B�e�N�X�`����C�ӂ̐����W���w�肵�ĕ`��ł���
+// デバッグ用HUD。テクスチャを任意の数座標を指定して描画できる
 UCLASS()
 class PLAPLAUESAMPLE_API APaintSampleDebugHUD : public AHUD
 {
@@ -16,8 +16,8 @@ class PLAPLAUESAMPLE_API APaintSampleDebugHUD : public AHUD
 public:
 	enum class EIndex
 	{
-		RenderTarget, // �y�C���g�����Ώۂ̃e�N�X�`��
-		Brush,	// �y�C���g�u���V�̃e�N�X�`��	
+		RenderTarget, // ペイントした対象のテクスチャ
+		Brush,	// ペイントブラシのテクスチャ	
 		
 		Count,
 	};

@@ -24,7 +24,7 @@ void UPaintTargetComponent::BeginPlay()
 		return;
 	}
 
-	// ‰ŠúƒeƒNƒXƒ`ƒƒ‚ð•`‰æ‚µ‚Ä‚¨‚­
+	// åˆæœŸãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æç”»ã—ã¦ãŠã
 	auto* OriginalMaterial = StaticMeshComponent->GetMaterial(0);
 	if (!OriginalMaterial)
 	{
@@ -32,9 +32,9 @@ void UPaintTargetComponent::BeginPlay()
 		return;
 	}
 
-	// “h‚é‚½‚ß‚ÌƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgì¬
+	// å¡—ã‚‹ãŸã‚ã®ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆä½œæˆ
 	{
-		// ƒeƒNƒXƒ`ƒƒ‚ðŽæ“¾
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å–å¾—
 		UTexture* Texture;
 		OriginalMaterial->GetTextureParameterValue(FName("BaseColor"), Texture);
 		if (!Texture)
@@ -45,11 +45,11 @@ void UPaintTargetComponent::BeginPlay()
 		CopyTextureToRenderTarget(Cast<UTexture2D>(Texture), OriginalMaterial, PaintRenderTarget);
 	}
 
-	// ƒ}ƒeƒŠƒAƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX‚ðì¬‚µ‚ÄAƒeƒNƒXƒ`ƒƒ‚ðÝ’è
+	// ãƒžãƒ†ãƒªã‚¢ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œæˆã—ã¦ã€ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®š
 	PaintMaterialInstance = UMaterialInstanceDynamic::Create(RenderTargetMaterialOriginal, this);
 	PaintMaterialInstance->SetTextureParameterValue(FName("RenderTargetTexture"), PaintRenderTarget);
 
-	// ƒƒbƒVƒ…‚Ìƒ}ƒeƒŠƒAƒ‹‚ð’u‚«Š·‚¦
+	// ãƒ¡ãƒƒã‚·ãƒ¥ã®ãƒžãƒ†ãƒªã‚¢ãƒ«ã‚’ç½®ãæ›ãˆ
 	StaticMeshComponent->SetMaterial(0, PaintMaterialInstance);
 }
 
@@ -62,7 +62,7 @@ void UPaintTargetComponent::CopyTextureToRenderTarget(UTexture2D* SourceTexture,
 		return;
 	}
 
-	// Render Target ‚Ìì¬
+	// Render Target ã®ä½œæˆ
 	OutRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, SourceTexture->GetSizeX(), SourceTexture->GetSizeY(), RTF_RGBA8);
 	if (!OutRenderTarget)
 	{
@@ -70,7 +70,7 @@ void UPaintTargetComponent::CopyTextureToRenderTarget(UTexture2D* SourceTexture,
 		return;
 	}
 
-	// Render Target ‚ÖƒeƒNƒXƒ`ƒƒ‚ðƒRƒs[
+	// Render Target ã¸ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚³ãƒ”ãƒ¼
 	UKismetRenderingLibrary::DrawMaterialToRenderTarget(this, OutRenderTarget, nullptr);
 	if (CopyMaterial)
 	{
@@ -118,14 +118,14 @@ void UPaintTargetComponent::PaintToPoint(UMaterialInstanceDynamic* BrushMaterial
 		check(OutUV.ContainsNaN() == false);
 		UE_LOG(LogTemp, Log, TEXT("Painting %.2f %.2f"), OutUV.X, OutUV.Y);
 
-		// ƒuƒ‰ƒV‚ÌMaterial‚Éƒpƒ‰ƒ[ƒ^‚ðÝ’è
+		// ãƒ–ãƒ©ã‚·ã®Materialã«ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’è¨­å®š
 		BrushMaterial->SetVectorParameterValue(FName("PaintUV"), FVector(OutUV.X, OutUV.Y, 0));
 		BrushMaterial->SetTextureParameterValue(FName("PaintTargetTexture"), PaintRenderTarget);
 
 		UKismetRenderingLibrary::DrawMaterialToRenderTarget(World, PaintRenderTarget, BrushMaterial);
 	}
 
-	// ƒfƒoƒbƒO•`‰æ
+	// ãƒ‡ãƒãƒƒã‚°æç”»
 	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 	{
 		if (APaintSampleDebugHUD* HUD = Cast<APaintSampleDebugHUD>(PC->GetHUD()))
@@ -153,12 +153,12 @@ FVector2f UPaintTargetComponent::CalcUV(const FHitResult& HitResult) const
 	const FStaticMeshLODResources& LOD = StaticMeshComponent->GetStaticMesh()->GetRenderData()->LODResources[0];
 	const FIndexArrayView Indices = LOD.IndexBuffer.GetArrayView();
 
-	// –Ê‚ð\¬‚·‚é’¸“_‚ÌƒCƒ“ƒfƒbƒNƒX‚ðŽæ“¾
+	// é¢ã‚’æ§‹æˆã™ã‚‹é ‚ç‚¹ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
 	const int32 Index0 = Indices[TriangleIndex * 3];
 	const int32 Index1 = Indices[TriangleIndex * 3 + 1];
 	const int32 Index2 = Indices[TriangleIndex * 3 + 2];
 
-	// ’¸“_‚Ì UV À•W‚ðŽæ“¾
+	// é ‚ç‚¹ã® UV åº§æ¨™ã‚’å–å¾—
 	const FVector2f UV0 = LOD.VertexBuffers.StaticMeshVertexBuffer.GetVertexUV(Index0, 0);
 	const FVector2f UV1 = LOD.VertexBuffers.StaticMeshVertexBuffer.GetVertexUV(Index1, 0);
 	const FVector2f UV2 = LOD.VertexBuffers.StaticMeshVertexBuffer.GetVertexUV(Index2, 0);
@@ -167,7 +167,7 @@ FVector2f UPaintTargetComponent::CalcUV(const FHitResult& HitResult) const
 	const FVector VertexPos1(LOD.VertexBuffers.PositionVertexBuffer.VertexPosition(Index1));
 	const FVector VertexPos2(LOD.VertexBuffers.PositionVertexBuffer.VertexPosition(Index2));
 
-	// ƒoƒŠƒZƒ“ƒgƒŠƒbƒNÀ•W‚ðŒvŽZ‚µ‚Ä UV ‚ð•âŠÔ
+	// ãƒãƒªã‚»ãƒ³ãƒˆãƒªãƒƒã‚¯åº§æ¨™ã‚’è¨ˆç®—ã—ã¦ UV ã‚’è£œé–“
 	const FVector Barycentric = FMath::ComputeBaryCentric2D(HitResult.ImpactPoint
 		, StaticMeshComponent->GetComponentTransform().TransformPosition(VertexPos0)
 		, StaticMeshComponent->GetComponentTransform().TransformPosition(VertexPos1)

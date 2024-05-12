@@ -15,7 +15,7 @@ class PLAPLAUESAMPLE_API UPaintTargetComponent : public UActorComponent
 	
 protected:
 
-	// @todo Á‚·
+	// @todo æ¶ˆã™
 	UPROPERTY(EditAnywhere, Category = "C++ Ref")
 	UMaterialInterface* RenderTargetMaterialOriginal = nullptr;
 
@@ -30,9 +30,9 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	// ƒeƒNƒXƒ`ƒƒ‚ğƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ÉƒRƒs[
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«ã‚³ãƒ”ãƒ¼
 	void CopyTextureToRenderTarget(UTexture2D* SourceTexture, UMaterialInterface* CopyMaterial, UTextureRenderTarget2D*& OutRenderTarget);
-	// ƒqƒbƒgˆÊ’u‚©‚çUVÀ•W‚ğŒvZ
+	// ãƒ’ãƒƒãƒˆä½ç½®ã‹ã‚‰UVåº§æ¨™ã‚’è¨ˆç®—
 	FVector2f CalcUV(const FHitResult& HitResult) const;
 
 private:
